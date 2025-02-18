@@ -62,7 +62,7 @@ class TestOutput(BaseModel):
 )
 def test_upload(
     files: Annotated[
-        list[UploadFile], File(...)
+        UploadFile, File(...)
     ],
 ):
     """Test uploading two files"""
