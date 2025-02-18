@@ -3,7 +3,7 @@ import os
 import time
 
 from fastapi import FastAPI, UploadFile, File
-from typing import Annotated
+from typing import Annotated, List
 from pydantic import BaseModel, Field
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -62,7 +62,7 @@ class TestOutput(BaseModel):
 )
 def test_upload(
     files: Annotated[
-        UploadFile, File(...)
+        List[UploadFile], File(...)
     ],
 ):
     """Test uploading two files"""
