@@ -22,6 +22,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 class TestOutput(BaseModel):
     """Form-based output schema for file upload test."""
     filename1: str = Field(
@@ -59,23 +60,25 @@ class TestOutput(BaseModel):
     summary="Files",
     description="Testing file uploads.",
 )
-
 def test_upload(
-    files: list[UploadFile],
+    files: Annotated[list[UploadFile], File(...)],  # Ensure list[UploadFile] is correctly annotated
 ):
     """Test uploading two files"""
     
+    if len(files) < 2:
+        return {"error": "Please upload exactly two files."}
+
     os.makedirs("data", exist_ok=True)  # Ensure the data directory exists
-    
-    corpus_location = f"data/{file[0].filename}"
-    queries_location = f"data/{file[1].filename}"
+
+    corpus_location = f"data/{files[0].filename}"
+    queries_location = f"data/{files[1].filename}"
 
     # Save the uploaded files
     with open(corpus_location, "wb") as f:
-        f.write(file[0].file.read())
+        f.write(files[0].file.read())
 
     with open(queries_location, "wb") as f:
-        f.write(file[1].file.read())
+        f.write(files[1].file.read())
 
     # Read the content of the saved files
     with open(corpus_location, "r", encoding="utf-8") as f:
@@ -85,8 +88,8 @@ def test_upload(
         filecontent2 = f.read()
 
     return TestOutput(
-        filename1=file[0].filename,
-        filename2=file[1].filename,
+        filename1=files[0].filename,
+        filename2=files[1].filename,
         filecontent1=filecontent1,
         filecontent2=filecontent2,
     )
