@@ -62,7 +62,7 @@ class TestOutput(BaseModel):
 )
 def test_upload(
     files: Annotated[
-        list[UploadFile], File(description="Multiple files as UploadFile")
+        list[UploadFile], File(...)
     ],
 ):
     """Test uploading two files"""
@@ -70,10 +70,8 @@ def test_upload(
     if len(files) < 2:
         return {"error": "Please upload exactly two files."}
 
-    os.makedirs("data", exist_ok=True)  # Ensure the data directory exists
-
-    corpus_location = f"data/{files[0].filename}"
-    queries_location = f"data/{files[1].filename}"
+    corpus_location = f"{files[0].filename}"
+    queries_location = f"{files[1].filename}"
 
     # Save the uploaded files
     with open(corpus_location, "wb") as f:
