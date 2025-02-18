@@ -61,7 +61,9 @@ class TestOutput(BaseModel):
     description="Testing file uploads.",
 )
 def test_upload(
-    files: list[UploadFile],
+    files: Annotated[
+        list[UploadFile], File(description="Multiple files as UploadFile")
+    ],
 ):
     """Test uploading two files"""
     
