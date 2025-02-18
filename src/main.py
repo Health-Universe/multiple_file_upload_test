@@ -59,22 +59,23 @@ class TestOutput(BaseModel):
     summary="Files",
     description="Testing file uploads.",
 )
+
 def test_upload(
-    corpus: Annotated[UploadFile, File()],
-    queries: Annotated[UploadFile, File()],
+    files: list[UploadFile],
 ):
     """Test uploading two files"""
+    
     os.makedirs("data", exist_ok=True)  # Ensure the data directory exists
-
-    corpus_location = f"data/{corpus.filename}"
-    queries_location = f"data/{queries.filename}"
+    
+    corpus_location = f"data/{file[0].filename}"
+    queries_location = f"data/{file[1].filename}"
 
     # Save the uploaded files
     with open(corpus_location, "wb") as f:
-        f.write(corpus.file.read())
+        f.write(file[0].file.read())
 
     with open(queries_location, "wb") as f:
-        f.write(queries.file.read())
+        f.write(file[1].file.read())
 
     # Read the content of the saved files
     with open(corpus_location, "r", encoding="utf-8") as f:
@@ -84,8 +85,8 @@ def test_upload(
         filecontent2 = f.read()
 
     return TestOutput(
-        filename1=corpus.filename,
-        filename2=queries.filename,
+        filename1=file[0].filename,
+        filename2=file[1].filename,
         filecontent1=filecontent1,
         filecontent2=filecontent2,
     )
